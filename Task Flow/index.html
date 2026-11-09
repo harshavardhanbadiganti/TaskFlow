@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TaskFlow – To-Do List Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><i class="fa-solid fa-circle-check"></i><span>TaskFlow</span></div>
+      <nav class="nav" id="nav" aria-label="Main navigation">
+        <button class="nav-item" data-view="dashboard"><i class="fa-solid fa-table-columns"></i>Dashboard</button>
+        <button class="nav-item" data-view="all"><i class="fa-solid fa-list-check"></i>All Tasks</button>
+        <button class="nav-item" data-view="today"><i class="fa-solid fa-sun"></i>Today</button>
+        <button class="nav-item" data-view="upcoming"><i class="fa-solid fa-calendar-days"></i>Upcoming</button>
+        <button class="nav-item" data-view="completed"><i class="fa-solid fa-circle-check"></i>Completed</button>
+        <button class="nav-item" data-view="categories"><i class="fa-solid fa-tags"></i>Categories</button>
+        <button class="nav-item" data-view="settings"><i class="fa-solid fa-gear"></i>Settings</button>
+      </nav>
+      <p class="side-foot"><i class="fa-solid fa-lock"></i> Tasks are saved in this browser only.</p>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+
+    <!-- Main content -->
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+        <div class="hello">
+          <h1 id="greeting"></h1>
+          <p id="todayDate"></p>
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode"><i class="fa-solid fa-moon"></i></button>
+          <button class="btn primary" id="addBtn"><i class="fa-solid fa-plus"></i><span>Add task</span></button>
+        </div>
+      </header>
+
+      <!-- Dashboard stats -->
+      <section id="statsSection" aria-label="Task statistics">
+        <div class="stats">
+          <article class="card stat"><i class="fa-solid fa-layer-group s-blue"></i><div><strong id="statTotal">0</strong><span>Total tasks</span></div></article>
+          <article class="card stat"><i class="fa-solid fa-circle-check s-green"></i><div><strong id="statDone">0</strong><span>Completed</span></div></article>
+          <article class="card stat"><i class="fa-solid fa-hourglass-half s-amber"></i><div><strong id="statPending">0</strong><span>Pending</span></div></article>
+          <article class="card stat"><i class="fa-solid fa-triangle-exclamation s-red"></i><div><strong id="statOverdue">0</strong><span>Overdue</span></div></article>
+        </div>
+        <article class="card progress-card">
+          <div class="progress-head"><h2>Task completion</h2><strong id="progressPct">0%</strong></div>
+          <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar"><span id="progressFill"></span></div>
+          <p id="progressText"></p>
+        </article>
+      </section>
+
+      <!-- Categories -->
+      <section id="categorySection" hidden aria-label="Categories">
+        <div class="cat-grid" id="categoryGrid"></div>
+      </section>
+
+      <!-- Settings -->
+      <section id="settingsSection" hidden aria-label="Settings">
+        <article class="card settings">
+          <h2>Settings</h2>
+          <div class="setting-row"><div><h3>Appearance</h3><p>Switch between light and dark mode.</p></div><button class="btn" id="themeBtn2"><i class="fa-solid fa-circle-half-stroke"></i>Toggle theme</button></div>
+          <div class="setting-row"><div><h3>Clear completed tasks</h3><p>Remove every task you have finished.</p></div><button class="btn" id="clearDoneBtn2"><i class="fa-solid fa-broom"></i>Clear completed</button></div>
+          <div class="setting-row"><div><h3>Reset all data</h3><p>Delete every task and start fresh.</p></div><button class="btn danger" id="resetBtn"><i class="fa-solid fa-trash"></i>Delete all</button></div>
+        </article>
+      </section>
+
+      <!-- Tasks -->
+      <section id="tasksSection" aria-label="Tasks">
+        <div class="toolbar card">
+          <div class="search"><i class="fa-solid fa-magnifying-glass"></i><input type="search" id="searchInput" placeholder="Search tasks by title" aria-label="Search tasks"></div>
+          <select id="sortSelect" aria-label="Sort tasks">
+            <option value="recent">Sort: Recently added</option>
+            <option value="due">Sort: Due date</option>
+            <option value="priority">Sort: Priority</option>
+          </select>
+          <button class="btn" id="clearDoneBtn"><i class="fa-solid fa-broom"></i><span>Clear completed</span></button>
+        </div>
+        <div class="chips" id="chips" role="group" aria-label="Filter tasks">
+          <button class="chip" data-filter="all">All</button>
+          <button class="chip" data-filter="today">Today</button>
+          <button class="chip" data-filter="upcoming">Upcoming</button>
+          <button class="chip" data-filter="pending">Pending</button>
+          <button class="chip" data-filter="completed">Completed</button>
+          <button class="chip" data-filter="overdue">Overdue</button>
+        </div>
+        <div class="list-head"><h2 id="listTitle">Your tasks</h2><span id="listCount"></span></div>
+        <ul class="task-list" id="taskList"></ul>
+      </section>
+    </main>
+  </div>
+
+  <!-- Add / Edit dialog -->
+  <dialog id="taskDialog">
+    <form id="taskForm" novalidate>
+      <div class="dlg-head"><h2 id="dialogTitle">Add task</h2><button type="button" class="icon-btn" data-close aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div>
+      <label for="fTitle">Title</label>
+      <input id="fTitle" maxlength="80" placeholder="What needs to be done?" autocomplete="off">
+      <small class="err" id="errTitle"></small>
+      <label for="fDesc">Description <em>(optional)</em></label>
+      <textarea id="fDesc" rows="3" maxlength="300" placeholder="Add a few details"></textarea>
+      <div class="grid3">
+        <div><label for="fPriority">Priority</label>
+          <select id="fPriority"><option>High</option><option selected>Medium</option><option>Low</option></select></div>
+        <div><label for="fCategory">Category</label>
+          <select id="fCategory"><option>Personal</option><option>Work</option><option>Study</option><option>Other</option></select></div>
+        <div><label for="fDue">Due date</label><input type="date" id="fDue"></div>
+      </div>
+      <small class="err" id="errDue"></small>
+      <div class="dlg-foot"><button type="button" class="btn" data-close>Cancel</button><button type="submit" class="btn primary" id="saveBtn">Add task</button></div>
+    </form>
+  </dialog>
+
+  <!-- Confirm dialog -->
+  <dialog id="confirmDialog" class="small">
+    <div class="confirm">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <h2 id="confirmTitle">Are you sure?</h2>
+      <p id="confirmText"></p>
+      <div class="dlg-foot"><button class="btn" id="confirmNo">Cancel</button><button class="btn danger solid" id="confirmYes">Delete</button></div>
+    </div>
+  </dialog>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
